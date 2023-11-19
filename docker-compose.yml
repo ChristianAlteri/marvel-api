@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+  marvelapp:
+    container_name: marvelapp
+    image: christianalteri/marvelapp:1.0.0
+    build: .
+    ports:
+      - "3000:3000"
+    environment: 
+      - DB_TYPE=postgres
+      - PG_HOST=db
+      - PG_USER=postgres
+      - PG_PASSWORD=password
+      - PG_DB=marvelapp
+      - PG_PORT=5432
+    depends_on:
+      - db
+  db: 
+    container_name: db
+    image: postgres:12
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=marvelapp
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+volumes:
+  pgdata: {}
+
+    
