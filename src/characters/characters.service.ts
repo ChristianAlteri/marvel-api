@@ -32,7 +32,8 @@ export class CharactersService {
     } catch (error: any) {
       console.log(error.message);
     }
-}
+  }
+  
   // Delete a character
   async delete(id: number): Promise<void> {
     console.log('successfully deleted a character');

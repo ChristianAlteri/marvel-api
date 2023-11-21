@@ -7,16 +7,16 @@ import { Character } from './character.entity';
 export class CharactersController {
     constructor(private readonly charactersService: CharactersService) {}
 
-    // Get all characters
-    @Get()
-    async findAll(): Promise<Character[]> {
-        return this.charactersService.findall();
-    }
-
     // Create a new character
     @Post()
     async create(@Body() character: Character): Promise<Character> {
         return await this.charactersService.create(character);
+    }
+
+    // Get all characters
+    @Get()
+    async findAll(): Promise<Character[]> {
+        return this.charactersService.findall();
     }
 
     // Update a character
@@ -24,15 +24,10 @@ export class CharactersController {
     async update(@Param('id') id: number, @Body() character: Character): Promise<void> {
         return this.charactersService.update(id, character);
     }
-    
+
     // Delete a character
     @Delete(':id')
     async delete(@Param('id') id: number): Promise<void> {
-        // const character = this.charactersService.findOne(id);
-
-        // if (!character) {
-        //     throw new Error('Character not found');
-        // }
         return this.charactersService.delete(id);
     }
 }
