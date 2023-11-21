@@ -11,16 +11,34 @@ export class CharactersService {
   ) {}
 
   // Create a new character
-  async create(character: Character): Promise<Character> {
+  async create(characterData: {
+    character: Character;
+    knownEnemies?: number[];
+    knownAccomplices?: number[];
+  }): Promise<Character> {
+    const { character, knownEnemies, knownAccomplices } = characterData;
+
+    if (knownEnemies) {
+      character.knownEnemies =
+        await this.characterRepository.findByIds(knownEnemies);
+    }
+
+    if (knownAccomplices) {
+      character.knownAccomplices =
+        await this.characterRepository.findByIds(knownAccomplices);
+    }
+
     const newCharacter = await this.characterRepository.create(character);
     console.log('successfully created a new character');
     return this.characterRepository.save(newCharacter);
   }
 
   // Get all characters
-  async findall(): Promise<Character[]> {
+  async findAll(): Promise<Character[]> {
     console.log('successfully returned all characters');
-    return await this.characterRepository.find();
+    return await this.characterRepository.find({
+      relations: ['knownAccomplices', 'knownEnemies'],
+    });
   }
 
   // Update a character
@@ -33,7 +51,7 @@ export class CharactersService {
       console.log(error.message);
     }
   }
-  
+
   // Delete a character
   async delete(id: number): Promise<void> {
     console.log('successfully deleted a character');

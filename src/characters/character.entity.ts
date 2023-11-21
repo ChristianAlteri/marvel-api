@@ -1,4 +1,4 @@
-import { Column, PrimaryGeneratedColumn, Entity } from 'typeorm';
+import { Column, PrimaryGeneratedColumn, Entity, ManyToMany, JoinTable } from 'typeorm';
 
 @Entity()
 export class Character {
@@ -24,6 +24,15 @@ export class Character {
     // If they are currently active in Marvel films.
     @Column({type: 'boolean'})
     active: boolean;
+
+    //  Add the relationships
+    @ManyToMany(type => Character, { cascade: true, nullable: true })
+    @JoinTable()
+    knownAccomplices: Character[];
+
+    @ManyToMany(type => Character, { cascade: true, nullable: true })
+    @JoinTable()
+    knownEnemies: Character[];
    
 }
 

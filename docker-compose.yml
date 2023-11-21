@@ -6,13 +6,13 @@ services:
     image: christianalteri/marvelapp:1.0.0
     build: .
     ports:
-      - "3000:3000"
+      - "3001:3000"
     environment: 
       - DB_TYPE=postgres
       - PG_HOST=db
-      - PG_USER=postgres
+      - PG_USER=christian
       - PG_PASSWORD=password
-      - PG_DB=marvelapp
+      - PG_DB=this-that-marvel
       - PG_PORT=5432
     depends_on:
       - db
@@ -20,11 +20,11 @@ services:
     container_name: db
     image: postgres:12
     ports:
-      - "127.0.0.1:5432"
+      - "5431:5432"
     environment:
-      - POSTGRES_USER=postgres
+      - POSTGRES_USER=christian
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=marvelapp
+      - POSTGRES_DB=this-that-marvel
     volumes:
       - pgdata:/var/lib/postgresql/data
 volumes:
