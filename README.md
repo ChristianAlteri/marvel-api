@@ -29,7 +29,7 @@ access endpoint via https://localhost:3001/characters
 
 ## Mock-Up
 
-The following picture shows an example of the application being used:
+The following picture shows the relationship between the data ERD:
 
 ![The following picture shows an example of the application being used.](./erd_marvel.png)
 
