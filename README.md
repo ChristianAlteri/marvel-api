@@ -40,22 +40,50 @@ The following picture shows the relationship between the data ERD:
 
 
 CRUD: 
+
+```bash
+# Schema deployment
+CREATE TABLE Character (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    age INT NOT NULL,
+    gender ENUM('male', 'female', 'other') NOT NULL,
+    active BOOLEAN NOT NULL
+);
+
+CREATE TABLE Character_Character_KnownAccomplices (
+    characterId INT,
+    knownAccompliceId INT,
+    PRIMARY KEY (characterId, knownAccompliceId),
+    FOREIGN KEY (characterId) REFERENCES Character(id) ON DELETE CASCADE,
+    FOREIGN KEY (knownAccompliceId) REFERENCES Character(id) ON DELETE CASCADE
+);
+
+CREATE TABLE Character_Character_KnownEnemies (
+    characterId INT,
+    knownEnemyId INT,
+    PRIMARY KEY (characterId, knownEnemyId),
+    FOREIGN KEY (characterId) REFERENCES Character(id) ON DELETE CASCADE,
+    FOREIGN KEY (knownEnemyId) REFERENCES Character(id) ON DELETE CASCADE
+);
+
+```
+
+
+
   
 ```bash  
 CREATE
 # - Create a lonely character without enemies or accomplices:
 INSERT INTO "character"("name", "age", "gender", "active") VALUES ($1, $2, $3, $4) RETURNING "id" -- PARAMETERS: ["Mr Marvel",20,"male",true]
 # - Create a character with known enemies and accomplices:
-SELECT "Character"."id" AS "Character_id", "Character"."name" AS "Character_name", "Character"."age" AS "Character_age", "Character"."gender" AS "Character_gender", "Character"."active" AS "Character_active" FROM "character" "Character" WHERE "Character"."id" IN ($1, $2) -- PARAMETERS: [1,2]
-query: SELECT "Character"."id" AS "Character_id", "Character"."name" AS "Character_name", "Character"."age" AS "Character_age", "Character"."gender" AS "Character_gender", "Character"."active" AS "Character_active" FROM "character" "Character" WHERE "Character"."id" IN ($1, $2) -- PARAMETERS: [3,4]
-successfully created a new character
-query: SELECT "Character"."id" AS "Character_id", "Character"."name" AS "Character_name", "Character"."age" AS "Character_age", "Character"."gender" AS "Character_gender", "Character"."active" AS "Character_active" FROM "character" "Character" WHERE "Character"."id" IN ($1, $2, $3) -- PARAMETERS: [3,1,2]
-query: SELECT "Character_knownAccomplices_rid"."characterId_1" AS "characterId_1", "Character_knownAccomplices_rid"."characterId_2" AS "characterId_2" FROM "character" "character" INNER JOIN "character_known_accomplices_character" "Character_knownAccomplices_rid" ON ("Character_knownAccomplices_rid"."characterId_1" = $1 AND "Character_knownAccomplices_rid"."characterId_2" = "character"."id") OR ("Character_knownAccomplices_rid"."characterId_1" = $2 AND "Character_knownAccomplices_rid"."characterId_2" = "character"."id") OR ("Character_knownAccomplices_rid"."characterId_1" = $3 AND "Character_knownAccomplices_rid"."characterId_2" = "character"."id") ORDER BY "Character_knownAccomplices_rid"."characterId_2" ASC, "Character_knownAccomplices_rid"."characterId_1" ASC -- PARAMETERS: [1,3,2]
-query: SELECT "Character_knownEnemies_rid"."characterId_1" AS "characterId_1", "Character_knownEnemies_rid"."characterId_2" AS "characterId_2" FROM "character" "character" INNER JOIN "character_known_enemies_character" "Character_knownEnemies_rid" ON ("Character_knownEnemies_rid"."characterId_1" = $1 AND "Character_knownEnemies_rid"."characterId_2" = "character"."id") OR ("Character_knownEnemies_rid"."characterId_1" = $2 AND "Character_knownEnemies_rid"."characterId_2" = "character"."id") OR ("Character_knownEnemies_rid"."characterId_1" = $3 AND "Character_knownEnemies_rid"."characterId_2" = "character"."id") ORDER BY "Character_knownEnemies_rid"."characterId_2" ASC, "Character_knownEnemies_rid"."characterId_1" ASC -- PARAMETERS: [1,3,2]
-query: START TRANSACTION
-query: INSERT INTO "character"("name", "age", "gender", "active") VALUES ($1, $2, $3, $4) RETURNING "id" -- PARAMETERS: ["Doctor Strange",20,"male",true]
-query: INSERT INTO "character_known_accomplices_character"("characterId_1", "characterId_2") VALUES ($1, $2) -- PARAMETERS: [6,3]
-query: INSERT INTO "character_known_enemies_character"("characterId_1", "characterId_2") VALUES ($1, $2), ($3, $4) -- PARAMETERS: [6,1,6,2]
+WITH new_character AS (
+    INSERT INTO "Character"("name", "age", "gender", "active")
+    VALUES ('Mr Marvel', 20, 'male', true)
+    RETURNING "id"
+)
+INSERT INTO "Character_Character_KnownAccomplices"("characterId", "knownAccompliceId")
+SELECT new_character.id, 1 FROM new_character;
 ```
 
 ```bash  
