@@ -107,6 +107,11 @@ DESTROY
 DELETE FROM "character" WHERE "id" IN ($1) -- PARAMETERS: ["9"]
 ```
 
+## Notes
+- The task was really interesting. I have never used NestJs so it was great fun learning how to build an Entity then link services and controllers to mutate and populate the schema with data.
+- Highlight: Getting the CRUD operations to work across multiple ports with docker
+- Challenge: Completely new file structure and syntax with NestJs that i am unfamiliar with.
+- Furthermore i would implement more complex queries and handle edge cases. I would also grab the front end data and store it. Then i would display a sort of 'build your own team' where your heros are displayed.
 
 ###
 
